@@ -3,13 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>Minesweeper</title>
-    <link href="styles.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
     <script src="js/jquery-1.12.3.min.js"></script>
     <script src="js/minesweeper.js"></script>
   </head>
   <body>
     <div id="container">
-      <div id="settings-container">
+      <div id="settings">
+        <div id="mines">
+          <p>Mines</p>
+          <p id="mines-left">10</p>
+        </div>
         <form id="settings-form">
           <select>
             <option value="Easy">Easy</option>
@@ -17,8 +21,16 @@
             <option value="Hard">Hard</option>
           </select>
         </form>
+        <div id="timer">
+          <p>Time</p>
+          <p id="time">0</p>
+        </div>
       </div>
-      <div id="grid">
+      <div id="grid-container">
+        <table id="grid">
+          <tbody>
+          </tbody>
+        </table>
       </div>
     </div>
   </body>
