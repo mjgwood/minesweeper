@@ -60,7 +60,7 @@ body {
       background-color: #e8ffe8; }
       #container #grid tbody tr td:hover {
         background-color: #e8ffe8; }
-      #container #grid tbody tr td .mine {
-        background-color: #FF2222; }
+  #container .mine {
+    background-color: #FF2222 !important; }
 
 /*# sourceMappingURL=styles.css.map */
