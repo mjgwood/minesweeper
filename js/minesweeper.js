@@ -59,6 +59,8 @@ var minesweeper = (function() {
       for ( var i = 0; i < this.mines.length; i++ ) {
         $("#" + this.getSquareId(this.mines[i])).addClass("mine");
       }
+
+      this.getNumOfTouchingMines();
     },
 
     // Take x & y values of a square and return square id
@@ -71,18 +73,33 @@ var minesweeper = (function() {
       var touching = [];
 
       if ( id === 0 || id % 9 === 0 ) {
-        touching.push(id - 9).push(id - 9 + 1).push(id + 1).push(id + 9).push(id + 9 + 1);
+        touching.push((id - 9), (id - 9 + 1), (id + 1), (id + 9), (id + 9 + 1));
       } else if ( id - 9 < 0 ) {
-        touching.push(id - 1).push(id + 1).push(id + 9 - 1).push(id + 9).push(id + 9 + 1);
+        touching.push((id - 1), (id + 1), (id + 9 - 1), (id + 9), (id + 9 + 1));
       } else if ( id % 9 - 8 === 0 ) {
-        touching.push(id - 9 - 1).push(id - 9).push(id - 1).push(id + 9 - 1).push(id + 9);
+        touching.push((id - 9 - 1), (id - 9), (id - 1), (id + 9 - 1), (id + 9));
       } else if ( id + 9 >= 81 ) {
-        touching.push(id - 9 - 1).push(id - 9).push(id - 9 + 1).push(id - 1).push(id + 1);
+        touching.push((id - 9 - 1), (id - 9), (id - 9 + 1), (id - 1), (id + 1));
       } else {
-        touching.push(id - 9 - 1).push(id - 9).push(id - 9 + 1).push(id - 1).push(id + 1).push(id + 9 - 1).push(id + 9).push(id + 9 + 1);
+        touching.push((id - 9 - 1), (id - 9), (id - 9 + 1), (id - 1), (id + 1), (id + 9 - 1), (id + 9), (id + 9 + 1));
       }
 
       return touching;
+    },
+
+    getNumOfTouchingMines: function() {
+      for ( var i = 0; i < this.squares.length; i++ ) {
+        var touchingSquares = this.getTouchingSquares(i);
+        var touchingMines = 0;
+
+        for ( var j = 0; j < touchingSquares.length; j++ ) {
+          if ( $("#" + touchingSquares[j]).hasClass("mine") ) {
+            touchingMines++;
+          }
+        }
+
+        $("#" + i).text(touchingMines);
+      }
     }
   };
 
@@ -95,10 +112,14 @@ var minesweeper = (function() {
 $(document).ready( function() {
   minesweeper.grid.inititialize();
 
-  for ( var i = 0; i < minesweeper.grid.squares.length; i++ ) {
-    if ( i % 9 - 8 === 0 ) {
-      $("#" + i).text("X");
-    }
-  }
+  // var Tsquares = minesweeper.grid.getTouchingSquares(48);
+  // for ( var i = 0; i < Tsquares.length; i++ ) {
+  //   if ( $("#" + Tsquares[i]).hasClass("mine") ) {
+  //     $("#" + Tsquares[i]).text("X");
+  //   } else {
+  //     $("#" + Tsquares[i]).text("O");
+  //   }
+  // }
+
 
 });
