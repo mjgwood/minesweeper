@@ -6,6 +6,7 @@ var minesweeper = (function() {
     inititialize: function() {
       this.squares = [];
       this.mines = [];
+      this.numMines = 10;
       this.createGrid();
     },
 
@@ -20,7 +21,7 @@ var minesweeper = (function() {
 
         for ( var j = 0; j < numCols; j++ ) {
           this.squares.push([i,j]);
-          toAdd += "<td id=" + (i * numRows + j) + "></td>";
+          toAdd += "<td><div id=" + (i * numRows + j) + "></div></td>";
         }
 
         toAdd += "</tr>";
@@ -57,7 +58,7 @@ var minesweeper = (function() {
 
     displayMines: function() {
       for ( var i = 0; i < this.mines.length; i++ ) {
-        $("#" + this.getSquareId(this.mines[i])).addClass("mine");
+        $("#" + this.getSquareId(this.mines[i])).addClass("mine").html("<img class='flag-mine' src='img/mine.gif'/>");
       }
 
       this.getNumOfTouchingMines();
@@ -98,7 +99,9 @@ var minesweeper = (function() {
           }
         }
 
-        $("#" + i).text(touchingMines);
+        if ( !$("#" + i).hasClass("mine") ) {
+          $("#" + i).text(touchingMines);
+        }
       }
     }
   };
@@ -121,5 +124,6 @@ $(document).ready( function() {
   //   }
   // }
 
+  //$("#38").html("<img class='flag-mine' src='img/mine.gif'/>");
 
 });
