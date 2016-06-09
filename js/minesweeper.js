@@ -64,6 +64,25 @@ var minesweeper = (function() {
     // Take x & y values of a square and return square id
     getSquareId: function(array) {
       return array[1] * 9 + array[0];
+    },
+
+    // Take id of a square and return array with ids of touching squares
+    getTouchingSquares: function(id) {
+      var touching = [];
+
+      if ( id === 0 || id % 9 === 0 ) {
+        touching.push(id - 9).push(id - 9 + 1).push(id + 1).push(id + 9).push(id + 9 + 1);
+      } else if ( id - 9 < 0 ) {
+        touching.push(id - 1).push(id + 1).push(id + 9 - 1).push(id + 9).push(id + 9 + 1);
+      } else if ( id % 9 - 8 === 0 ) {
+        touching.push(id - 9 - 1).push(id - 9).push(id - 1).push(id + 9 - 1).push(id + 9);
+      } else if ( id + 9 >= 81 ) {
+        touching.push(id - 9 - 1).push(id - 9).push(id - 9 + 1).push(id - 1).push(id + 1);
+      } else {
+        touching.push(id - 9 - 1).push(id - 9).push(id - 9 + 1).push(id - 1).push(id + 1).push(id + 9 - 1).push(id + 9).push(id + 9 + 1);
+      }
+
+      return touching;
     }
   };
 
@@ -75,4 +94,11 @@ var minesweeper = (function() {
 
 $(document).ready( function() {
   minesweeper.grid.inititialize();
+
+  for ( var i = 0; i < minesweeper.grid.squares.length; i++ ) {
+    if ( i % 9 - 8 === 0 ) {
+      $("#" + i).text("X");
+    }
+  }
+
 });

@@ -50,12 +50,15 @@ body {
     margin-left: auto;
     margin-right: auto;
     border-spacing: 0;
-    border-collapse: collapse; }
+    border-collapse: collapse;
+    table-layout: fixed; }
     #container #grid:hover {
       cursor: pointer; }
     #container #grid tbody tr td {
       width: 20px;
       height: 20px;
+      text-align: center;
+      line-height: 20px;
       border: solid 1px #333333;
       background-color: #e8ffe8; }
       #container #grid tbody tr td:hover {

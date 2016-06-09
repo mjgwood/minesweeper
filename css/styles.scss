@@ -66,6 +66,7 @@ body {
     margin-right: auto;
     border-spacing: 0;
     border-collapse: collapse;
+    table-layout: fixed;
     &:hover {
       cursor: pointer;
     }
@@ -77,6 +78,8 @@ body {
         td {
           width: 20px;
           height: 20px;
+          text-align: center;
+          line-height: 20px;
           border: solid 1px #333333;
           background-color: #e8ffe8;
           &:hover {
