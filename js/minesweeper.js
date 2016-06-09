@@ -21,7 +21,7 @@ var minesweeper = (function() {
 
         for ( var j = 0; j < numCols; j++ ) {
           this.squares.push([i,j]);
-          toAdd += "<td><div id=" + (i * numRows + j) + "></div></td>";
+          toAdd += "<td id=" + (i * numRows + j) + "></td>";
         }
 
         toAdd += "</tr>";
@@ -99,7 +99,9 @@ var minesweeper = (function() {
           }
         }
 
-        if ( !$("#" + i).hasClass("mine") ) {
+         if ( touchingMines === 0 ) {
+           $("#" + i).css("background-color","#B3E2B3");
+        } else if ( !$("#" + i).hasClass("mine") ) {
           $("#" + i).text(touchingMines);
         }
       }

@@ -68,11 +68,14 @@ body {
         height: 100%;
         overflow: hidden;
       }
-  #container .mine {
-     }
-  #container .flag-mine {
-    width: 12px;
-    height: 12px;
-  }
+      #container .mine {
+         }
+      #container .flag-mine {
+        width: 12px;
+        height: 12px;
+      }
+      #container .blank {
+        background-color: #e8fffc;
+      }
 
 /*# sourceMappingURL=styles.css.map */
