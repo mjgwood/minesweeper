@@ -56,12 +56,11 @@ var minesweeper = (function() {
       this.displayMines();
     },
 
+    // Display location of all mines
     displayMines: function() {
       for ( var i = 0; i < this.mines.length; i++ ) {
         $("#" + this.getSquareId(this.mines[i])).addClass("mine").html("<img class='flag-mine' src='img/mine.gif'/>");
       }
-
-      this.getNumOfTouchingMines();
     },
 
     // Take x & y values of a square and return square id
@@ -88,23 +87,20 @@ var minesweeper = (function() {
       return touching;
     },
 
-    getNumOfTouchingMines: function() {
-      for ( var i = 0; i < this.squares.length; i++ ) {
-        var touchingSquares = this.getTouchingSquares(i);
+    // Take square id and return number of touching mines
+    getNumOfTouchingMines: function(id) {
+      // for ( var i = 0; i < this.squares.length; i++ ) {
+        var touchingSquares = this.getTouchingSquares(id);
         var touchingMines = 0;
 
-        for ( var j = 0; j < touchingSquares.length; j++ ) {
-          if ( $("#" + touchingSquares[j]).hasClass("mine") ) {
+        for ( var i = 0; i < touchingSquares.length; i++ ) {
+          if ( $("#" + touchingSquares[i]).hasClass("mine") ) {
             touchingMines++;
           }
         }
 
-         if ( touchingMines === 0 ) {
-           $("#" + i).css("background-color","#B3E2B3");
-        } else if ( !$("#" + i).hasClass("mine") ) {
-          $("#" + i).text(touchingMines);
-        }
-      }
+        return touchingMines;
+      //}
     }
   };
 
@@ -117,15 +113,15 @@ var minesweeper = (function() {
 $(document).ready( function() {
   minesweeper.grid.inititialize();
 
-  // var Tsquares = minesweeper.grid.getTouchingSquares(48);
-  // for ( var i = 0; i < Tsquares.length; i++ ) {
-  //   if ( $("#" + Tsquares[i]).hasClass("mine") ) {
-  //     $("#" + Tsquares[i]).text("X");
-  //   } else {
-  //     $("#" + Tsquares[i]).text("O");
-  //   }
-  // }
+  $("td").on("click", function() {
+    var clickedSquare = parseInt($(this).attr("id"));
+    var touchingMines = minesweeper.grid.getNumOfTouchingMines(clickedSquare);
 
-  //$("#38").html("<img class='flag-mine' src='img/mine.gif'/>");
+    if ( touchingMines === 0 ) {
+      $("#" + clickedSquare).css("background-color","#B3E2B3");
+    } else if ( !$("#" + clickedSquare).hasClass("mine") ) {
+      $("#" + clickedSquare).text(touchingMines);
+    }
+  })
 
 });
