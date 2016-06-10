@@ -32,7 +32,7 @@ var minesweeper = (function() {
       // displayTimer();
     },
 
-    // Generate unique random coords of mines, fill mines array, and call displayMines()
+    // Generate unique random coords of mines, fill mines array, and add mine class
     loadMines: function() {
       var i = 0;
 
@@ -53,13 +53,36 @@ var minesweeper = (function() {
         }
       }
 
-      this.displayMines();
+      for ( var i = 0; i < this.mines.length; i++ ) {
+        $("#" + this.getSquareId(this.mines[i])).addClass("mine");
+      }
     },
 
-    // Display location of all mines
-    displayMines: function() {
-      for ( var i = 0; i < this.mines.length; i++ ) {
-        $("#" + this.getSquareId(this.mines[i])).addClass("mine").html("<img class='flag-mine' src='img/mine.gif'/>");
+    // Take a square's id and display it's details
+    displaySquare: function(id) {
+      var touchingMines = this.getNumOfTouchingMines(id);
+
+      if ( $("#" + id).hasClass("mine") ) {
+        //minesweeper.grid.displayAllSquares();
+      } else if ( touchingMines === 0 ) {
+        $("#" + id).css("background-color","#B3E2B3");
+      } else if ( !$("#" + id).hasClass("mine") ) {
+        $("#" + id).text(touchingMines);
+      }
+    },
+
+    // Display details of all squares
+    displayAllSquares: function() {
+      for ( var i = 0; i < this.squares.length; i++ ) {
+        var touchingMines = this.getNumOfTouchingMines(this.squares[i]);
+
+        if ( $("#" + this.squares[i]).hasClass("mine") ) {
+          $("#" + this.squares[i]).html("<img class='flag-mine' src='img/mine.gif'/>");
+        } else if ( this.squares[i] === 0 ) {
+          $("#" + this.square[i]).css("background-color","#B3E2B3");
+        } else if ( !$("#" + this.squares[i]).hasClass("mine") ) {
+          $("#" + this.squares[i]).text(touchingMines);
+        }
       }
     },
 
@@ -89,18 +112,16 @@ var minesweeper = (function() {
 
     // Take square id and return number of touching mines
     getNumOfTouchingMines: function(id) {
-      // for ( var i = 0; i < this.squares.length; i++ ) {
-        var touchingSquares = this.getTouchingSquares(id);
-        var touchingMines = 0;
+      var touchingSquares = this.getTouchingSquares(id);
+      var touchingMines = 0;
 
-        for ( var i = 0; i < touchingSquares.length; i++ ) {
-          if ( $("#" + touchingSquares[i]).hasClass("mine") ) {
-            touchingMines++;
-          }
+      for ( var i = 0; i < touchingSquares.length; i++ ) {
+        if ( $("#" + touchingSquares[i]).hasClass("mine") ) {
+          touchingMines++;
         }
+      }
 
-        return touchingMines;
-      //}
+      return touchingMines;
     }
   };
 
@@ -114,14 +135,8 @@ $(document).ready( function() {
   minesweeper.grid.inititialize();
 
   $("td").on("click", function() {
-    var clickedSquare = parseInt($(this).attr("id"));
-    var touchingMines = minesweeper.grid.getNumOfTouchingMines(clickedSquare);
-
-    if ( touchingMines === 0 ) {
-      $("#" + clickedSquare).css("background-color","#B3E2B3");
-    } else if ( !$("#" + clickedSquare).hasClass("mine") ) {
-      $("#" + clickedSquare).text(touchingMines);
-    }
+    var id = parseInt($(this).attr("id"));
+    minesweeper.grid.displaySquare(id);
   })
 
 });
