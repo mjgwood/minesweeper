@@ -1,5 +1,14 @@
 var minesweeper = (function() {
 
+  function Square( coords ) {
+    this.coords = coords;
+    this.id = grid.getSquareId(coords);
+    this.touchingSquares = grid.getTouchingSquares(this.id);
+    this.numTouchingMines = grid.getNumOfTouchingMines(this.id);
+    this.hasMine = false;
+    this.hasFlag = false;
+  }
+
   // Grid module
   var grid = {
 
@@ -20,7 +29,7 @@ var minesweeper = (function() {
         toAdd += "<tr>";
 
         for ( var j = 0; j < numCols; j++ ) {
-          this.squares.push([i,j]);
+          this.squares.push( new Square( [i,j] ) );
           toAdd += "<td id=" + (i * numRows + j) + "></td>";
         }
 
@@ -48,6 +57,7 @@ var minesweeper = (function() {
         }
 
         if ( dupeFound === false ) {
+          this.squares[this.getSquareId([row,col])].hasMine = true;
           this.mines.push([row, col]);
           i++;
         }
@@ -67,8 +77,19 @@ var minesweeper = (function() {
       } else if ( touchingMines === 0 ) {
         $("#" + id).css("background-color","#B3E2B3");
       } else if ( !$("#" + id).hasClass("mine") ) {
-        $("#" + id).text(touchingMines);
+        $("#" + id).css("background-color","#B3E2B3").text(touchingMines);
       }
+
+      var touching = this.getTouchingSquares(id);
+
+      for ( var i = 0; i < touching.length; i++ ) {
+        var touchingMines = this.getNumOfTouchingMines(touching[i]);
+
+        if ( touchingMines === 0 ) {
+          this.displaySquare(touching[i]);
+        }
+      }
+
     },
 
     // Display details of all squares
