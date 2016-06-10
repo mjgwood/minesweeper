@@ -64,6 +64,7 @@ body {
       #container #grid tbody tr td:hover {
         background-color: #e8ffe8; }
       #container .mine {
+        background-color: #ff2222 !important;
          }
       #container .flag-mine {
         width: 12px;
