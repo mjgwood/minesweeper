@@ -35,7 +35,8 @@ var minesweeper = (function() {
       };
 
     for ( var dir in directions ) {
-      toAdd = [ this.coords[1] + directions[dir][1], this.coords[0] + directions[dir][0] ];
+      toAdd = [ this.coords[1] + directions[dir][1], this.coords[0] +
+      directions[dir][0] ];
 
       if ( isValidPosition(toAdd) ) {
         touching.push( grid.getSquareId(toAdd));
@@ -116,32 +117,57 @@ var minesweeper = (function() {
       }
     },
 
-    // Take a square's id and display it's details
+    // Handle how to display square and call displaySquares() if necessary
     displaySquare: function(id) {
       var square = this.squares[id],
           touchingMines = square.numOfTouchingMines;
 
-      square.condition = CONDITION.clicked;
-
-      if ( this.squares[id].hasMine === true ) {
+      if ( this.squares[id].hasMine ) {
         //minesweeper.grid.displayAllSquares();
+        //Lose game
       } else if ( touchingMines === 0 ) {
-        $("#" + id).css("background-color","#B3E2B3");
-      } else if ( this.squares[id].hasMine === false ) {
-        $("#" + id).css("background-color","#B3E2B3").text(touchingMines);
+        this.displaySquares(id);
+        //$("#" + id).css("background-color","#B3E2B3");
+      } else {
+        this.revealSquare(square, CONDITION.clicked);
       }
+    },
 
-      var touching = square.getTouchingSquares();
+    // Display nearby squares until squares that are touching mines are shown
+    displaySquares: function(id) {
+      var square = this.squares[id],
+          nextSquare,
+          touchingSquares,
+          added = [id],
+          toDisplay = [id];
 
-      for ( var i = 0; i < touching.length; i++ ) {
-        var touchingMines = this.squares[id].numOfTouchingMines;
+      while ( toDisplay.length > 0 ) {
+        nextSquare = this.squares[ toDisplay.shift() ];
 
-        if ( touchingMines === 0 ) {
-          this.displaySquare(touching[i]);
-          // this.squares[touching[i]].condition = CONDITION.clicked;
+        if ( nextSquare.numOfTouchingMines === 0 ) {
+          touchingSquares = nextSquare.getTouchingSquares();
+
+          $.each( touchingSquares, function( i, touching ) {
+            if ( added.indexOf(touching) === -1 ) {
+              added.push( touching );
+              toDisplay.push( touching );
+            }
+          });
+        }
+
+        if ( nextSquare.condition === CONDITION.unclicked ) {
+          this.revealSquare(nextSquare, CONDITION.clicked);
         }
       }
+    },
 
+    revealSquare: function(square, newCondition) {
+      square.condition = newCondition;
+      $("#" + square.id).css("background-color","#B3E2B3")
+
+      if ( square.numOfTouchingMines > 0 ) {
+        $("#" + square.id).text(square.numOfTouchingMines);
+      }
     },
 
     // Display details of all squares
@@ -185,7 +211,6 @@ var minesweeper = (function() {
       if ( click === 1 ) {
         switch (square.condition) {
           case CONDITION.unclicked:
-            square.condition = CONDITION.clicked;
             this.displaySquare(id);
             break;
           case CONDITION.clicked:
@@ -193,13 +218,6 @@ var minesweeper = (function() {
             break;
           default:
         }
-        // var touchingSquares = minesweeper.grid.squares[id].getTouchingSquares();
-        //
-        // for ( var i = 0; i < touchingSquares.length; i++ ) {
-        //   if ( minesweeper.grid.squares[touchingSquares[i]].hasMine === false ) {
-        //     $("#" + touchingSquares[i]).css("background-color","#B3E2B3").text(minesweeper.grid.squares[touchingSquares[i]].numOfTouchingMines);
-        //   }
-        // }
       } else if ( click === 3 ) {
         switch (square.condition) {
           case CONDITION.unclicked:
