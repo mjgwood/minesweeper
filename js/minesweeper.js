@@ -1,15 +1,25 @@
 var minesweeper = (function() {
+  var setup = {
+    mines: 10,
+    width: 9,
+    height: 9
+  }
+
+  var CONDITION = {
+    unclicked: 0,
+    clicked: 1,
+    flag: 2
+  }
 
   function Square( coords ) {
     this.coords = coords;
     this.id = grid.getSquareId(this.coords);
-    //this.touchingSquares = grid.getTouchingSquares(this.id);
+    this.condition = CONDITION.unclicked;
     this.numOfTouchingMines = 0;
     this.hasMine = false;
-    this.hasFlag = false;
   }
 
-  // Take id of a square and return array with ids of touching squares
+  // Return array with ids of touching squares
   Square.prototype.getTouchingSquares = function() {
     var touching = [],
       toAdd,
@@ -32,48 +42,36 @@ var minesweeper = (function() {
       }
     }
 
-    // if ( id === 0 || id % 9 === 0 ) {
-    //   touching.push(up, upright, right, down, downright);
-    // } else if ( id - 9 < 0 ) {
-    //   touching.push(left, right, downleft, down, downright);
-    // } else if ( id % 9 - 8 === 0 ) {
-    //   touching.push(upleft, up, left, downleft, down);
-    // } else if ( id + 9 >= 81 ) {
-    //   touching.push(upleft, up, upright, left, right);
-    // } else {
-    //   touching.push(upleft, up, upright, left, right, downleft, down, downright);
-    // }
-
     return touching;
   };
 
   var isValidPosition = function( position ) {
-    return position[0] >= 0 && position[0] < 9 &&
-           position[1] >= 0 && position[1] < 9;
+    return position[0] >= 0 && position[0] < setup.width &&
+           position[1] >= 0 && position[1] < setup.height;
   };
 
   // Grid module
   var grid = {
 
     inititialize: function() {
+      this.numCols = setup.width;
+      this.numRows = setup.height;
       this.squares = [];
       this.mines = [];
-      this.numMines = 10;
+      this.numMines = setup.mines;
       this.createGrid();
     },
 
     // Create grid according to numRows x numCols and fill squares array
     createGrid: function() {
-      var numRows = 9,
-          numCols = 9,
-          toAdd = "";
+      var toAdd = "";
 
-      for ( var i = 0; i < numRows; i++ ) {
+      for ( var i = 0; i < this.numRows; i++ ) {
         toAdd += "<tr>";
 
-        for ( var j = 0; j < numCols; j++ ) {
+        for ( var j = 0; j < this.numCols; j++ ) {
           this.squares.push( new Square( [i,j] ) );
-          toAdd += "<td id=" + (i * numRows + j) + "></td>";
+          toAdd += "<td id=" + (i * this.numRows + j) + "></td>";
         }
 
         toAdd += "</tr>";
@@ -179,15 +177,14 @@ var minesweeper = (function() {
 
     handleClick: function(click, id) {
       var square = this.squares[id];
-
       if ( click === 1 ) {
-        // var touching = minesweeper.grid.squares[id].getTouchingSquares();
-        // alert(touching);
-
-        // if ( minesweeper.grid.squares[id].hasMine === false ) {
-        //   $("#" + id).text(minesweeper.grid.squares[id].numOfTouchingMines);
+        // switch (square) {
+        //   case expression:
+        //
+        //     break;
+        //   default:
+        //
         // }
-
         var touchingSquares = minesweeper.grid.squares[id].getTouchingSquares();
 
         for ( var i = 0; i < touchingSquares.length; i++ ) {

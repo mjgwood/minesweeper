@@ -24,7 +24,13 @@ time, mark, audio, video {
 /*GLOBAL*/
 body {
   font-family: monospace;
-  background: #CCEECC; }
+  background: #CCEECC;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;}
 
 /*CONTAINER*/
 #container {
