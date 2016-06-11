@@ -59,7 +59,8 @@ var minesweeper = (function() {
       this.numRows = setup.height;
       this.squares = [];
       this.mines = [];
-      this.numMines = setup.mines;
+      this.minesLeft = setup.mines;
+      this.squaresLeft = setup.width * setup.height - setup.mines;
       this.createGrid();
     },
 
@@ -174,9 +175,20 @@ var minesweeper = (function() {
     lose: function() {
       $.each( this.mines, function( i, mine ) {
         var id = minesweeper.grid.getSquareId(mine);
-        $("#" + id).html("<img class='flag-mine' src='img/mine.gif'/>");
+        $("#" + id).css("background-color", "#ff2222").html("<img class='flag-mine' src='img/mine.gif'/>");
       });
       alert("Game over");
+    },
+
+    // Increases or decreases mineLeft by 1 and updates html mine counter
+    updateMineCounter: function(i) {
+      if ( i === 0 ) {
+        this.mineLeft--;
+      } else {
+        this.mineLeft++;
+      }
+
+      $("#mines-left").text(this.mineLeft);
     },
 
     // Display details of all squares
@@ -232,16 +244,14 @@ var minesweeper = (function() {
           case CONDITION.unclicked:
             square.condition = CONDITION.flagged;
             $("#" + id).html("<img class='flag-mine' src='img/flag.gif'/>");
-            this.numMines--;
-            //this.updateMineCounter();
+            this.updateMineCounter(0);
             break;
           case CONDITION.clicked:
             break;
           case CONDITION.flagged:
             square.condition = CONDITION.unclicked;
             $("#" + id).html("");
-            this.numMines++;
-            //this.updateMineCounter();
+            this.updateMineCounter(1);
             break;
           default:
 
