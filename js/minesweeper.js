@@ -118,7 +118,10 @@ var minesweeper = (function() {
 
     // Take a square's id and display it's details
     displaySquare: function(id) {
-      var touchingMines = this.getNumOfTouchingMines(id);
+      var square = this.squares[id],
+          touchingMines = square.numOfTouchingMines;
+
+      square.condition = CONDITION.clicked;
 
       if ( this.squares[id].hasMine === true ) {
         //minesweeper.grid.displayAllSquares();
@@ -128,13 +131,14 @@ var minesweeper = (function() {
         $("#" + id).css("background-color","#B3E2B3").text(touchingMines);
       }
 
-      var touching = this.squares[id].touchingSquares;
+      var touching = square.getTouchingSquares();
 
       for ( var i = 0; i < touching.length; i++ ) {
         var touchingMines = this.squares[id].numOfTouchingMines;
 
         if ( touchingMines === 0 ) {
           this.displaySquare(touching[i]);
+          // this.squares[touching[i]].condition = CONDITION.clicked;
         }
       }
 
@@ -175,11 +179,13 @@ var minesweeper = (function() {
       return touchingMines;
     },
 
+    // Handles left and right click conditions
     handleClick: function(click, id) {
       var square = this.squares[id];
       if ( click === 1 ) {
         switch (square.condition) {
           case CONDITION.unclicked:
+            square.condition = CONDITION.clicked;
             this.displaySquare(id);
             break;
           case CONDITION.clicked:
