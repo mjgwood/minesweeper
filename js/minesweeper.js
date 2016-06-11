@@ -8,7 +8,7 @@ var minesweeper = (function() {
   var CONDITION = {
     unclicked: 0,
     clicked: 1,
-    flag: 2
+    flagged: 2
   }
 
   function Square( coords ) {
@@ -87,8 +87,8 @@ var minesweeper = (function() {
       var i = 0;
 
       while ( i < 10 ) {
-        var row = Math.floor(Math.random() * 9),
-            col = Math.floor(Math.random() * 9),
+        var row = Math.floor(Math.random() * this.numRows),
+            col = Math.floor(Math.random() * this.numCols),
             dupeFound = false,
             square = this.squares[this.getSquareId([row,col])],
             touchingSquares;
@@ -157,7 +157,7 @@ var minesweeper = (function() {
 
     // Take x & y values of a square and return square id
     getSquareId: function(array) {
-      return array[1] * 9 + array[0];
+      return array[1] * this.numCols + array[0];
     },
 
     // Take square id and return number of touching mines
@@ -178,22 +178,41 @@ var minesweeper = (function() {
     handleClick: function(click, id) {
       var square = this.squares[id];
       if ( click === 1 ) {
-        // switch (square) {
-        //   case expression:
-        //
-        //     break;
-        //   default:
-        //
-        // }
-        var touchingSquares = minesweeper.grid.squares[id].getTouchingSquares();
-
-        for ( var i = 0; i < touchingSquares.length; i++ ) {
-          if ( minesweeper.grid.squares[touchingSquares[i]].hasMine === false ) {
-            $("#" + touchingSquares[i]).css("background-color","#B3E2B3").text(minesweeper.grid.squares[touchingSquares[i]].numOfTouchingMines);
-          }
+        switch (square.condition) {
+          case CONDITION.unclicked:
+            this.displaySquare(id);
+            break;
+          case CONDITION.clicked:
+          case CONDITION.flagged:
+            break;
+          default:
         }
+        // var touchingSquares = minesweeper.grid.squares[id].getTouchingSquares();
+        //
+        // for ( var i = 0; i < touchingSquares.length; i++ ) {
+        //   if ( minesweeper.grid.squares[touchingSquares[i]].hasMine === false ) {
+        //     $("#" + touchingSquares[i]).css("background-color","#B3E2B3").text(minesweeper.grid.squares[touchingSquares[i]].numOfTouchingMines);
+        //   }
+        // }
       } else if ( click === 3 ) {
-        $("#" + id).html("<img class='flag-mine' src='img/flag.gif'/>");
+        switch (square.condition) {
+          case CONDITION.unclicked:
+            square.condition = CONDITION.flagged;
+            $("#" + id).html("<img class='flag-mine' src='img/flag.gif'/>");
+            this.numMines--;
+            //this.updateMineCounter();
+            break;
+          case CONDITION.clicked:
+            break;
+          case CONDITION.flagged:
+            square.condition = CONDITION.unclicked;
+            $("#" + id).html("");
+            this.numMines++;
+            //this.updateMineCounter();
+            break;
+          default:
+
+        }
       }
     }
   };
