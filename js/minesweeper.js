@@ -35,8 +35,8 @@ var minesweeper = (function() {
       };
 
     for ( var dir in directions ) {
-      toAdd = [ this.coords[1] + directions[dir][1], this.coords[0] +
-      directions[dir][0] ];
+      toAdd = [ this.coords[0] + directions[dir][0], this.coords[1] +
+      directions[dir][1] ];
 
       if ( isValidPosition(toAdd) ) {
         touching.push( grid.getSquareId(toAdd));
