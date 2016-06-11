@@ -113,7 +113,7 @@ var minesweeper = (function() {
       }
 
       for ( var i = 0; i < this.mines.length; i++ ) {
-        $("#" + this.getSquareId(this.mines[i])).addClass("mine");
+        $("#" + this.getSquareId(this.mines[i]));
       }
     },
 
@@ -123,8 +123,7 @@ var minesweeper = (function() {
           touchingMines = square.numOfTouchingMines;
 
       if ( this.squares[id].hasMine ) {
-        //minesweeper.grid.displayAllSquares();
-        //Lose game
+        this.lose();
       } else if ( touchingMines === 0 ) {
         this.displaySquares(id);
         //$("#" + id).css("background-color","#B3E2B3");
@@ -161,6 +160,7 @@ var minesweeper = (function() {
       }
     },
 
+    // Update html to show either blank or number of mines touching
     revealSquare: function(square, newCondition) {
       square.condition = newCondition;
       $("#" + square.id).css("background-color","#B3E2B3")
@@ -168,6 +168,15 @@ var minesweeper = (function() {
       if ( square.numOfTouchingMines > 0 ) {
         $("#" + square.id).text(square.numOfTouchingMines);
       }
+    },
+
+    // End game and reveal all mines
+    lose: function() {
+      $.each( this.mines, function( i, mine ) {
+        var id = minesweeper.grid.getSquareId(mine);
+        $("#" + id).html("<img class='flag-mine' src='img/mine.gif'/>");
+      });
+      alert("Game over");
     },
 
     // Display details of all squares
