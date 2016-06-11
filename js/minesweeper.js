@@ -175,6 +175,29 @@ var minesweeper = (function() {
       }
 
       return touchingMines;
+    },
+
+    handleClick: function(click, id) {
+      var square = this.squares[id];
+
+      if ( click === 1 ) {
+        // var touching = minesweeper.grid.squares[id].getTouchingSquares();
+        // alert(touching);
+
+        // if ( minesweeper.grid.squares[id].hasMine === false ) {
+        //   $("#" + id).text(minesweeper.grid.squares[id].numOfTouchingMines);
+        // }
+
+        var touchingSquares = minesweeper.grid.squares[id].getTouchingSquares();
+
+        for ( var i = 0; i < touchingSquares.length; i++ ) {
+          if ( minesweeper.grid.squares[touchingSquares[i]].hasMine === false ) {
+            $("#" + touchingSquares[i]).css("background-color","#B3E2B3").text(minesweeper.grid.squares[touchingSquares[i]].numOfTouchingMines);
+          }
+        }
+      } else if ( click === 3 ) {
+        $("#" + id).html("<img class='flag-mine' src='img/flag.gif'/>");
+      }
     }
   };
 
@@ -187,23 +210,13 @@ var minesweeper = (function() {
 $(document).ready( function() {
   minesweeper.grid.inititialize();
 
-  $("td").on("click", function() {
+  $( "td" ).on( "contextmenu", function(e) {
+    e.preventDefault();
+  });
+
+  $("td").mouseup( function(e) {
     var id = parseInt($(this).attr("id"));
-
-    // var touching = minesweeper.grid.squares[id].getTouchingSquares();
-    // alert(touching);
-
-    if ( minesweeper.grid.squares[id].hasMine === false ) {
-      $("#" + id).text(minesweeper.grid.squares[id].numOfTouchingMines);
-    }
-
-    var touchingSquares = minesweeper.grid.squares[id].getTouchingSquares();
-
-    // for ( var i = 0; i < touchingSquares.length; i++ ) {
-    //   if ( minesweeper.grid.squares[touchingSquares[i]].hasMine === false ) {
-    //     $("#" + touchingSquares[i]).css("background-color","#B3E2B3").text(minesweeper.grid.squares[touchingSquares[i]].numOfTouchingMines);
-    //   }
-    // }
+    minesweeper.grid.handleClick(e.which, id);
   })
 
 });
