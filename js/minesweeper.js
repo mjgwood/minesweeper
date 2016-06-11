@@ -124,7 +124,7 @@ var minesweeper = (function() {
           touchingMines = square.numOfTouchingMines;
 
       if ( this.squares[id].hasMine ) {
-        this.lose();
+        this.endGame(0);
       } else if ( touchingMines === 0 ) {
         this.displaySquares(id);
         //$("#" + id).css("background-color","#B3E2B3");
@@ -169,41 +169,49 @@ var minesweeper = (function() {
       if ( square.numOfTouchingMines > 0 ) {
         $("#" + square.id).text(square.numOfTouchingMines);
       }
+
+      this.squaresLeft--;
+      if ( this.squaresLeft === 0 ) {
+        this.endGame(1);
+      }
     },
 
-    // End game and reveal all mines
-    lose: function() {
+    // End game and reveal all squares if win or just mines if lose
+    endGame: function(end) {
+      if ( end === 1 ) {
+        this.displayMines(1);
+        alert("You Win!");
+      } else {
+        this.displayMines(0);
+        alert("Game Over :(");
+      }
+    },
+
+    // End game and reveal all flags if win or mines if lose
+    displayMines: function(end) {
+      var toAdd;
+
+      if ( end === 1 ) {
+        toAdd = "<img class='flag-mine' src='img/flag.gif'/>";
+      } else {
+        toAdd = "<img class='flag-mine' src='img/mine.gif'/>";
+      }
+
       $.each( this.mines, function( i, mine ) {
         var id = minesweeper.grid.getSquareId(mine);
-        $("#" + id).css("background-color", "#ff2222").html("<img class='flag-mine' src='img/mine.gif'/>");
+        $("#" + id).html(toAdd);
       });
-      alert("Game over");
     },
 
-    // Increases or decreases mineLeft by 1 and updates html mine counter
+    // Increases or decreases minesLeft by 1 and updates html mine counter
     updateMineCounter: function(i) {
       if ( i === 0 ) {
-        this.mineLeft--;
+        this.minesLeft--;
       } else {
-        this.mineLeft++;
+        this.minesLeft++;
       }
 
-      $("#mines-left").text(this.mineLeft);
-    },
-
-    // Display details of all squares
-    displayAllSquares: function() {
-      for ( var i = 0; i < this.squares.length; i++ ) {
-        var touchingMines = this.getNumOfTouchingMines(this.squares[i]);
-
-        if ( $("#" + this.squares[i]).hasClass("mine") ) {
-          $("#" + this.squares[i]).html("<img class='flag-mine' src='img/mine.gif'/>");
-        } else if ( this.squares[i] === 0 ) {
-          $("#" + this.square[i]).css("background-color","#B3E2B3");
-        } else if ( !$("#" + this.squares[i]).hasClass("mine") ) {
-          $("#" + this.squares[i]).text(touchingMines);
-        }
-      }
+      $("#mines-left").text(this.minesLeft);
     },
 
     // Take x & y values of a square and return square id
