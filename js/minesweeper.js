@@ -72,7 +72,7 @@ var minesweeper = (function() {
 
         for ( var j = 0; j < this.numCols; j++ ) {
           this.squares.push( new Square( [i,j] ) );
-          toAdd += "<td id=" + (i * this.numRows + j) + "></td>";
+          toAdd += "<td id=" + (i * this.numCols + j) + "></td>";
         }
 
         toAdd += "</tr>";
@@ -187,7 +187,7 @@ var minesweeper = (function() {
 
     // Take x & y values of a square and return square id
     getSquareId: function(array) {
-      return array[1] * this.numCols + array[0];
+      return array[0] * this.numCols + array[1];
     },
 
     // Take square id and return number of touching mines
@@ -256,6 +256,8 @@ $(document).ready( function() {
 
   $("td").mouseup( function(e) {
     var id = parseInt($(this).attr("id"));
+    // var touching = minesweeper.grid.squares[id].getTouchingSquares();
+    // alert(id + " + " + touching);
     minesweeper.grid.handleClick(e.which, id);
   })
 
