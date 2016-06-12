@@ -84,13 +84,17 @@ var minesweeper = (function() {
 
       $("tbody").empty().append(toAdd);
       this.loadMines();
+
+      $("#play-again").css("visibility", "hidden");
+      $("#time").text(0);
+      $("mines-left").text(this.minesLeft);
     },
 
     // Generate random mines, fill mines array, and update relevant Square info
     loadMines: function() {
       var i = 0;
 
-      while ( i < 10 ) {
+      while ( i < this.minesLeft ) {
         var row = Math.floor(Math.random() * this.numRows),
             col = Math.floor(Math.random() * this.numCols),
             dupeFound = false,
@@ -281,8 +285,25 @@ var minesweeper = (function() {
         count++;
         $("#time").text(count);
       }
+    },
+
+    changeDifficulty: function(difficulty) {
+      if ( difficulty === 0 ) {
+        this.changeSetup(10, 9, 9);
+      } else if ( difficulty === 1 ) {
+        this.changeSetup(40, 16, 16);
+      } else if ( difficulty === 2 ) {
+        this.changeSetup(99, 30, 19);
+      }
+    },
+
+    changeSetup: function( mines, width, height ) {
+      setup.mines = mines;
+      setup.width = width;
+      setup.height = height;
     }
   };
+
 
   return {
     grid: grid
@@ -314,8 +335,13 @@ $(document).ready( function() {
 
   $("#play-again").on( "click", function() {
     minesweeper.grid.inititialize();
-    $("#play-again").css("visibility", "hidden");
-    $("#time").text(0);
     handleClick();
   });
+
+  $("select").on( "change", function() {
+    minesweeper.grid.endGame();
+    minesweeper.grid.changeDifficulty(parseInt(this.value));
+    minesweeper.grid.inititialize();
+    handleClick();
+  })
 });
