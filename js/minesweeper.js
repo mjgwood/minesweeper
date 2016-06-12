@@ -61,8 +61,9 @@ var minesweeper = (function() {
       this.mines = [];
       this.minesLeft = setup.mines;
       this.squaresLeft = setup.width * setup.height - setup.mines;
-      this.time;
+      this.time = 0;
       this.gameOver = false;
+      this.firstClick = true;
       this.createGrid();
     },
 
@@ -187,6 +188,8 @@ var minesweeper = (function() {
       } else {
         this.displayMines(0);
       }
+
+      $("#play-again").css("visibility", "visible");
     },
 
     // End game and reveal all flags if win or mines if lose
@@ -276,7 +279,6 @@ var minesweeper = (function() {
 
       function runTimer() {
         count++;
-
         $("#time").text(count);
       }
     }
@@ -290,22 +292,30 @@ var minesweeper = (function() {
 
 $(document).ready( function() {
   minesweeper.grid.inititialize();
-  var firstClick = true;
+  handleClick();
 
-  $( "td" ).on( "contextmenu", function(e) {
-    e.preventDefault();
+  function handleClick() {
+    $("td").on( "contextmenu", function(e) {
+      e.preventDefault();
+    });
+
+    $("td").on( "mouseup", function(e) {
+      if ( minesweeper.grid.firstClick ) {
+        minesweeper.grid.timer();
+        minesweeper.grid.firstClick = false;
+      }
+
+      if ( !minesweeper.grid.gameOver ) {
+        var id = parseInt($(this).attr("id"));
+        minesweeper.grid.handleClick(e.which, id);
+      }
+    });
+  }
+
+  $("#play-again").on( "click", function() {
+    minesweeper.grid.inititialize();
+    $("#play-again").css("visibility", "hidden");
+    $("#time").text(0);
+    handleClick();
   });
-
-  $("td").mouseup( function(e) {
-    if ( firstClick ) {
-      minesweeper.grid.timer();
-      firstClick = false;
-    }
-
-    if ( !minesweeper.grid.gameOver ) {
-      var id = parseInt($(this).attr("id"));
-      minesweeper.grid.handleClick(e.which, id);
-    }
-  })
-
 });
