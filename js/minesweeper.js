@@ -61,6 +61,7 @@ var minesweeper = (function() {
       this.mines = [];
       this.minesLeft = setup.mines;
       this.squaresLeft = setup.width * setup.height - setup.mines;
+      this.time;
       this.createGrid();
     },
 
@@ -81,7 +82,6 @@ var minesweeper = (function() {
 
       $("tbody").empty().append(toAdd);
       this.loadMines();
-      // displayTimer();
     },
 
     // Generate random mines, fill mines array, and update relevant Square info
@@ -127,7 +127,6 @@ var minesweeper = (function() {
         this.endGame(0);
       } else if ( touchingMines === 0 ) {
         this.displaySquares(id);
-        //$("#" + id).css("background-color","#B3E2B3");
       } else {
         this.revealSquare(square, CONDITION.clicked);
       }
@@ -178,8 +177,11 @@ var minesweeper = (function() {
 
     // End game and reveal all squares if win or just mines if lose
     endGame: function(end) {
+      clearInterval(this.time);
+
       if ( end === 1 ) {
         this.displayMines(1);
+        $("#mines-left").text(0);
         alert("You Win!");
       } else {
         this.displayMines(0);
@@ -265,6 +267,18 @@ var minesweeper = (function() {
 
         }
       }
+    },
+
+    // Start/stop timer and update html time element
+    timer: function() {
+      var count = 0;
+      this.time = setInterval(runTimer, 1000);
+
+      function runTimer() {
+        count++;
+
+        $("#time").text(count);
+      }
     }
   };
 
@@ -276,15 +290,19 @@ var minesweeper = (function() {
 
 $(document).ready( function() {
   minesweeper.grid.inititialize();
+  var firstClick = true;
 
   $( "td" ).on( "contextmenu", function(e) {
     e.preventDefault();
   });
 
   $("td").mouseup( function(e) {
+    if ( firstClick ) {
+      minesweeper.grid.timer();
+      firstClick = false;
+    }
+
     var id = parseInt($(this).attr("id"));
-    // var touching = minesweeper.grid.squares[id].getTouchingSquares();
-    // alert(id + " + " + touching);
     minesweeper.grid.handleClick(e.which, id);
   })
 
