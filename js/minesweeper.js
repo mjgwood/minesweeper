@@ -87,7 +87,6 @@ var minesweeper = (function() {
 
       $("#play-again").css("visibility", "hidden");
       $("#time").text(0);
-      $("mines-left").text(this.minesLeft);
     },
 
     // Generate random mines, fill mines array, and update relevant Square info
@@ -122,6 +121,8 @@ var minesweeper = (function() {
       for ( var i = 0; i < this.mines.length; i++ ) {
         $("#" + this.getSquareId(this.mines[i]));
       }
+
+      $("#mines-left").text(this.minesLeft);
     },
 
     // Handle how to display square and call displaySquares() if necessary
@@ -287,23 +288,25 @@ var minesweeper = (function() {
       }
     },
 
+    // Assign number of mines and grid dimensions according to difficulty, then
+    // call changeSetup
     changeDifficulty: function(difficulty) {
       if ( difficulty === 0 ) {
         this.changeSetup(10, 9, 9);
       } else if ( difficulty === 1 ) {
         this.changeSetup(40, 16, 16);
       } else if ( difficulty === 2 ) {
-        this.changeSetup(99, 30, 19);
+        this.changeSetup(160, 30, 30);
       }
     },
 
+    // Change the values for a new game
     changeSetup: function( mines, width, height ) {
       setup.mines = mines;
       setup.width = width;
       setup.height = height;
     }
   };
-
 
   return {
     grid: grid
