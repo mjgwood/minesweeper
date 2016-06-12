@@ -62,6 +62,7 @@ var minesweeper = (function() {
       this.minesLeft = setup.mines;
       this.squaresLeft = setup.width * setup.height - setup.mines;
       this.time;
+      this.gameOver = false;
       this.createGrid();
     },
 
@@ -177,15 +178,14 @@ var minesweeper = (function() {
 
     // End game and reveal all squares if win or just mines if lose
     endGame: function(end) {
+      this.gameOver = true;
       clearInterval(this.time);
 
       if ( end === 1 ) {
         this.displayMines(1);
         $("#mines-left").text(0);
-        alert("You Win!");
       } else {
         this.displayMines(0);
-        alert("Game Over :(");
       }
     },
 
@@ -302,8 +302,10 @@ $(document).ready( function() {
       firstClick = false;
     }
 
-    var id = parseInt($(this).attr("id"));
-    minesweeper.grid.handleClick(e.which, id);
+    if ( !minesweeper.grid.gameOver ) {
+      var id = parseInt($(this).attr("id"));
+      minesweeper.grid.handleClick(e.which, id);
+    }
   })
 
 });
